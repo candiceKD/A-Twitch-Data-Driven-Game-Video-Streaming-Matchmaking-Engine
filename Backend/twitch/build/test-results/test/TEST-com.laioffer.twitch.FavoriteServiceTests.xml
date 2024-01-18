@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.laioffer.twitch.FavoriteServiceTests" tests="1" skipped="0" failures="0" errors="0" timestamp="2023-10-11T03:39:23" hostname="DESKTOP-J01T9EJ" time="0.947">
+  <properties/>
+  <testcase name="whenItemExist_unsetFavoriteItem_shouldDeleteFavoriteRecord()" classname="com.laioffer.twitch.FavoriteServiceTests" time="0.947"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
