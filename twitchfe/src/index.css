@@ -1,0 +1,13 @@
+@import "~antd/dist/antd.css";
+
+.site-layout-background {
+  /* 这是个选择器selector */
+  background: #fff;
+}
+
+.site-top-game-list ul {
+  /* 这是个选择器selector */
+  max-height: 700px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
