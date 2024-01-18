@@ -1,0 +1,20 @@
+version: '3.8'
+
+
+services:
+  db:
+    image: mysql:latest #image:镜像的意思, 就是把mysql的最新版的镜像下载下来
+    environment:       #  环境变量的参数
+      MYSQL_ROOT_HOST: '%'   #local host, 在其他地方写一个local host,但是在mysql里面要用%来表示
+      MYSQL_DATABASE: twitch
+      MYSQL_ROOT_PASSWORD: secret
+      TZ: UTC   #timezone
+    volumes:
+      - mysql-local:/var/lib/mysql
+    ports:
+      - "3306:3306"     #端口, 有一个映射, 因为mysql不是运行在我的电脑,还是运行在docker,所以不是真的使用端口,而是需要一个映射
+
+# permanent storage of data.
+#  docker也会在磁盘上划分出一块专门的区域来存数据, volumes就是表示你这块区域叫啥
+volumes:
+  mysql-local:

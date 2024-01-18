@@ -1,0 +1,57 @@
+spring:
+  jackson:
+    default-property-inclusion: non_null
+  cloud: #这里是来配置OpenFeign的
+    openfeign:
+      oauth2:
+        enabled: true
+        clientRegistrationId: twitch
+      client: #下面这些信息是API发请求时共享的信息, 配置发request时共有的信息
+        config:
+          twitch-api:
+            url: https://api.twitch.tv/helix
+            loggerLevel: basic
+            default-request-headers:
+              Client-Id: "pmp21l2hnf68asnarbyuqpwkev9b8j"
+              #只带id没有带authorization是因为authorization是动态的,而且这就是oauth2要handle的,如果token过期了,那么就去要新的
+
+  security:  #这个就是postman里面access token要做的事,下面这些是用来配置authorization
+    oauth2:
+      client:
+        registration:
+          twitch:
+            authorization-grant-type: client_credentials
+            client-authentication-method: client_secret_post #这个是这个authorization special的type
+            client-id: "pmp21l2hnf68asnarbyuqpwkev9b8j"
+            client-secret: "n8qu1sr3i7yy5se7mdr7bscesba8fh"
+        provider:
+          twitch:
+            token-uri: https://id.twitch.tv/oauth2/token #这个就是postman里面access token那个api的地址, uri是ur identification
+
+  datasource:
+#    这些是帮你如何连上database
+    url: jdbc:mysql://${DATABASE_URL:localhost}:3306/twitch?createDatabaseIfNotExist=true  #java database connection
+                                    # 我们用的database 是twitch, ?是用来加参数的, 后面参数的意思是如果连上并不存在,那么就创建一个空的
+    username: ${DATABASE_USERNAME:root} #   user name是默认的, 跟docker-compose.yml里面的环境配置有关
+    password: ${DATABASE_PASSWORD:secret}
+    driver-class-name: com.mysql.cj.jdbc.Driver #specify用的哪种驱动, 跟gradle里面的runtimeOnly的那条有关
+
+  sql:
+#    这些是在连上database的时候去运行下面那个文件
+    init:
+      mode: always #always表示运行一次就清库一次, 测试阶段是这样的, 但deploy之后不能run一次就初始化一次,那么用户数据都丢了,上线之后可以改为never
+      schema-locations: "classpath:database-init.sql"   #sql是为了specify如何连上database
+#      就是每次initial的时候都去这个location去找这个文件
+  cache:
+    caffeine:
+      spec: expireAfterWrite=1m
+#    cache 写操作之后1min就会expired
+
+
+
+logging:
+  level:
+    org.apache.coyote.http11.Http11InputBuffer: DEBUG # Incoming HTTP requests
+#    如果我们想要看到server端收到了什么,也就是能print debugging的消息, 我们就要enable HTTP logging
+    com.laioffer.twitch.external.TwitchApiClient: DEBUG # 这个class后面要自己写
+    org.springframework.jdbc.core: DEBUG # SQL
